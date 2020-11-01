@@ -1,0 +1,50 @@
+[
+  {
+    "type": "Snowboard",
+    "id": "1000",
+    "price": 150.80,
+    "title": "Snowboard Burton"
+  },
+  {
+    "type": "Snowboard",
+    "id": "1001",
+    "price": 210,
+    "title": "Snowboard Rossignol"
+  },
+  {
+    "type": "Snowboard",
+    "id": "1002",
+    "price": 250.50,
+    "title": "Snowboard Chamonix"
+  },
+  {
+    "type": "Snowboard",
+    "id": "1003",
+    "price": 220.10,
+    "title": "Snowboard Evol"
+  },
+  {
+    "type": "Snowboard",
+    "id": "1004",
+    "price": 189.99,
+    "title": "Snowboard Atom"
+  },
+  {
+    "type": "Snowboard",
+    "id": "1005",
+    "price": 320.50,
+    "title": "Snowboard DC"
+  },
+  {
+    "type": "Snowboard",
+    "id": "1006",
+    "price": 350,
+    "title": "Snowboard Lib Tech"
+  },
+  {
+    "type": "Snowboard",
+    "id": "1007",
+    "price": 214,
+    "title": "Snowboard Ride Control"
+  }
+]
