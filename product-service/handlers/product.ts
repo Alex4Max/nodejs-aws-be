@@ -13,7 +13,7 @@ export const getProductById: APIGatewayProxyHandler = async (event) => {
       }
     }
 
-    const product = products.find(p => p.id === id);
+    const product = await new Promise(resolve => resolve(products.find(p => p.id === id)));
     if (!product) {
       return {
         statusCode: 404,
