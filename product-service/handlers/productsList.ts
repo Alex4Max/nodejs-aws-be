@@ -2,16 +2,18 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 
 import products from '../products.json'
+import { headers, statusCodes } from '../constants';
 
 export const getProductsList: APIGatewayProxyHandler = async () => {
   try {
     return {
-      statusCode: 200,
-      body: JSON.stringify(products),
-    };
+      headers,
+      statusCode: statusCodes.OK,
+      body: JSON.stringify(products),};
   } catch (e) {
     return {
-      statusCode: 500,
+      headers,
+      statusCode: statusCodes.SERVER_ERROR,
       body: JSON.stringify(e),
     };
   }
