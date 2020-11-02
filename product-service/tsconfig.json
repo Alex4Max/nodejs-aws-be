@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["es2017"],
+    "lib": ["es2017", "esnext"],
     "removeComments": true,
     "moduleResolution": "node",
     "noUnusedLocals": true,
@@ -8,7 +8,9 @@
     "sourceMap": true,
     "target": "es2017",
     "outDir": "lib",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "noImplicitAny": true,
+    "inlineSourceMap": true
   },
   "include": ["./**/*.ts"],
   "exclude": [

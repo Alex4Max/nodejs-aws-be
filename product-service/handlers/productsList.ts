@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 
-import products from '../products.json'
+import * as products from '../products.json'
 import { headers, statusCodes } from '../constants';
 
 export const getProductsList: APIGatewayProxyHandler = async () => {
@@ -9,7 +9,8 @@ export const getProductsList: APIGatewayProxyHandler = async () => {
     return {
       headers,
       statusCode: statusCodes.OK,
-      body: JSON.stringify(products),};
+      body: JSON.stringify(products),
+    };
   } catch (e) {
     return {
       headers,
