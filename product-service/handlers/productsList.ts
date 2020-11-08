@@ -1,15 +1,24 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
+import { Client } from 'pg';
 
-import * as products from '../products.json'
+import { dbOptions } from '../db-init';
 import { headers, statusCodes } from '../constants';
 
-export const getProductsList: APIGatewayProxyHandler = async () => {
+export const getProductsList: APIGatewayProxyHandler = async (event) => {
+  const client = new Client(dbOptions);
+  console.log(`Get Product List handler event: ${event}`);
+
   try {
+    await client.connect();
+    const body = JSON.stringify((await client.query(
+        'SELECT p.id, p.title, p.image, p.description, p.price, s.count from product p INNER JOIN stock s ON p.id = s.product_id')
+    ).rows);
+
     return {
       headers,
       statusCode: statusCodes.OK,
-      body: JSON.stringify(products),
+      body,
     };
   } catch (e) {
     return {
@@ -17,5 +26,7 @@ export const getProductsList: APIGatewayProxyHandler = async () => {
       statusCode: statusCodes.SERVER_ERROR,
       body: JSON.stringify(e),
     };
+  } finally {
+    client.end();
   }
 };

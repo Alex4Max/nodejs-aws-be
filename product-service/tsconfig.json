@@ -10,7 +10,6 @@
     "outDir": "lib",
     "resolveJsonModule": true,
     "noImplicitAny": true,
-    "inlineSourceMap": true
   },
   "include": ["./**/*.ts"],
   "exclude": [
