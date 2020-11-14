@@ -15,7 +15,10 @@ const serverlessConfiguration: Serverless = {
     }
   },
   // Add the serverless-webpack plugin
-  plugins: ['serverless-webpack'],
+  plugins: [
+    'serverless-webpack',
+    'serverless-dotenv-plugin',
+  ],
   provider: {
     name: 'aws',
     runtime: 'nodejs12.x',
@@ -45,6 +48,16 @@ const serverlessConfiguration: Serverless = {
         http: {
           method: 'get',
           path: 'product/{id}',
+          cors: true,
+        },
+      }]
+    },
+    addProduct: {
+      handler: 'handler.postNewProduct',
+      events: [{
+        http: {
+          method: 'post',
+          path: 'product/add',
           cors: true,
         },
       }]
