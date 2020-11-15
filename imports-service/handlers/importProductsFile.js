@@ -1,9 +1,8 @@
 import { S3 } from 'aws-sdk';
-import { APIGatewayProxyHandler, APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 import { headers, statusCodes, BUCKET } from '../constants';
 
-export const importProductsFile: APIGatewayProxyHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
+export const importProductsFile = async (event) => {
   console.log('Import data lambda event: ');
   console.log(event);
   try {
@@ -28,7 +27,7 @@ export const importProductsFile: APIGatewayProxyHandler = async (event: APIGatew
       ContentType: 'text/csv',
     };
 
-    const body = await s3.getSignedUrlPromise('putObject', params);
+    const body = await s3.getSignedUrl('putObject', params);
 
     return {
       headers,
@@ -41,7 +40,6 @@ export const importProductsFile: APIGatewayProxyHandler = async (event: APIGatew
       statusCode: statusCodes.SERVER_ERROR,
       body: JSON.stringify(e),
     }
-
   }
 }
 
