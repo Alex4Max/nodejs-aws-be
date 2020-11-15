@@ -1,0 +1,43 @@
+
+service: import-service
+frameworkVersion: '2'
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-west-1
+  apiGateway:
+    shouldStartNameWithService: true
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:ListBucket"
+      Resource:
+        - "arn:aws:s3:::bucket-for-files"
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource:
+        - "arn:aws:s3:::bucket-for-files/*"
+
+
+functions:
+  importProductsFile:
+    handler: handler.importProductsFile
+    events:
+      - http:
+          method: get
+          path: import
+          request:
+            parameters:
+              querystrings:
+                name: true
+
+  importFileParser:
+    handler: handler.importFileParser
+    events:
+      - s3:
+          bucket: bucket-for-files
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true
