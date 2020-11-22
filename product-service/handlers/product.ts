@@ -1,11 +1,11 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
+import { APIGatewayProxyHandler, APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import 'source-map-support/register';
 import { Client } from 'pg';
 
 import { dbOptions } from '../db-init';
 import { headers, statusCodes } from '../constants';
 
-export const getProductById: APIGatewayProxyHandler = async (event) => {
+export const getProductById: APIGatewayProxyHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   const client = new Client(dbOptions);
   console.log(`Get Product by id handler event: ${event.pathParameters}`);
 
