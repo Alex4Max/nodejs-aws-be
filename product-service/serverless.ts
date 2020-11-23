@@ -14,7 +14,6 @@ const serverlessConfiguration: Serverless = {
       includeModules: true
     }
   },
-  // Add the serverless-webpack plugin
   plugins: [
     'serverless-webpack',
     'serverless-dotenv-plugin',
@@ -29,6 +28,60 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      SNS_ARN: {
+        Ref: 'SNSTopic',
+      },
+    },
+    iamRoleStatements: [{
+      Effect: 'Allow',
+      Action: 'sqs:*',
+      Resource: [{
+        'Fn::GetAtt': ['SQSQueue', 'Arn'],
+      }],
+    }, {
+      Effect: 'Allow',
+      Action: 'sns:*',
+      Resource: {
+        Ref: 'SNSTopic',
+      },
+    }],
+  },
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: 'my-product-queue'
+        },
+      },
+      SNSTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'my-product-topic',
+        }
+      },
+      SNSSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: 'sashamasj@gmail.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic',
+          },
+        },
+      },
+    },
+    Outputs: {
+      SQSQueueUrl: {
+        Value: {
+          Ref: 'SQSQueue',
+        }
+      },
+      ProductQueueArn: {
+        Value: {
+          'Fn::GetAtt': ['SQSQueue', 'Arn']
+        },
+      },
     },
   },
   functions: {
@@ -50,7 +103,7 @@ const serverlessConfiguration: Serverless = {
           path: 'product/{id}',
           cors: true,
         },
-      }]
+      }],
     },
     addProduct: {
       handler: 'handler.postNewProduct',
@@ -60,9 +113,20 @@ const serverlessConfiguration: Serverless = {
           path: 'product/add',
           cors: true,
         },
-      }]
-    }
-  }
+      }],
+    },
+    catalogBatchProcess: {
+      handler: 'handler.catalogBatchProcess',
+      events: [{
+        sqs: {
+          batchSize: 3,
+          arn: {
+            'Fn::GetAtt': [ 'SQSQueue', 'Arn' ],
+          },
+        },
+      }],
+    },
+  },
 };
 
 module.exports = serverlessConfiguration;
