@@ -1,11 +1,11 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
+import { APIGatewayProxyHandler, APIGatewayEvent, APIGatewayProxyResult } from 'aws-lambda';
 import 'source-map-support/register';
 import { Client } from 'pg';
 
 import { dbOptions } from '../db-init';
 import { headers, statusCodes, defaultImage } from '../constants';
 
-export const postNewProduct: APIGatewayProxyHandler = async (event) => {
+export const postNewProduct: APIGatewayProxyHandler = async (event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {
   const client = new Client(dbOptions);
   console.log(`Post Product List handler event: ${event}`);
 
