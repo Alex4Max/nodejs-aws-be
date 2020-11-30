@@ -1,6 +1,10 @@
 
 service:
   name: imports-service
+  import:
+    - authorizerArn:
+       Fn::ImportValue: "basicAuthorizerArn"
+
 frameworkVersion: '2'
 
 plugins:
@@ -39,10 +43,18 @@ functions:
       - http:
           method: get
           path: import
+          cors: true,
           request:
             parameters:
-              querystrings:
-                name: true
+            querystrings:
+            name: true
+          authorizer:
+            name: BasicAuthorizer
+            arn: "${cf:authorization-service-${self:provider.stage}.BasicAuthorizerLambdaFunctionQualifiedArn}"
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+            type: token
+
   parseImportedFile:
     handler: handler.importFileParser
     events:
@@ -52,3 +64,33 @@ functions:
           rules:
             - prefix: uploaded/
           existing: true
+
+resources:
+  Resources:
+    AccessDeniedResponse:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin:  "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers:  "'*'"
+
+        ResponseTemplates:
+          "application/json": '{ "message": "Access denied!!!" }'
+
+        ResponseType: ACCESS_DENIED
+        RestApiId: !Ref ApiGatewayRestApi
+        StatusCode: '403'
+
+    UnauthorizedResponse:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin:  "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers:  "'*'"
+
+        ResponseTemplates:
+          "application/json": '{ "message": "Unauthorized!" }'
+
+        ResponseType: UNAUTHORIZED
+        RestApiId: !Ref ApiGatewayRestApi
+        StatusCode: '401'
